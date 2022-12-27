@@ -226,6 +226,8 @@ class TaskListAPI(generics.ListCreateAPIView):
                     )
                 )
             )
+            for task in tasks:
+                task.annotations_results = eval(repr(task.annotations_results).replace('\\\\', '\\'))
             tasks_by_ids = {task.id: task for task in tasks}
             # keep ids ordering
             page = [tasks_by_ids[_id] for _id in ids]

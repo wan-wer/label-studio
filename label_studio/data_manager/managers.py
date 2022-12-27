@@ -166,6 +166,7 @@ def add_result_filter(field_name, _filter, filter_expressions, project):
 
     flag = flag_set('ff_back_dev_3865_filters_anno_171222_short', project.organization.created_by)
     if field_name == 'annotations_results' and flag:
+
         subquery = Q(id__in=
             Annotation.objects
                 .annotate(json_str=RawSQL('cast(result as text)', ''))
@@ -212,8 +213,13 @@ def add_user_filter(enabled, key, _filter, filter_expressions):
 
 
 def apply_filters(queryset, filters, project, request):
+    import json
     if not filters:
         return queryset
+    for item in filters.items:
+        value = getattr(item, 'value', None)
+        if value:
+            item.value = json.dumps(value).strip('"')
 
     # convert conjunction to orm statement
     filter_expressions = []
@@ -252,6 +258,7 @@ def apply_filters(queryset, filters, project, request):
         # annotations results & predictions results
         if field_name in ['annotations_results', 'predictions_results']:
             result = add_result_filter(field_name, _filter, filter_expressions, project)
+            print(result)
             if result == 'exit':
                 return queryset.none()
             elif result == 'continue':

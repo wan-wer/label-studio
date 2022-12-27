@@ -217,8 +217,9 @@ class DataManagerTaskSerializer(TaskSerializer):
                 result = list(set(result))
             result = round_floats(result)
             output = json.dumps(result, ensure_ascii=False)[1:-1]  # remove brackets [ ]
-
-        return output[:self.CHAR_LIMITS].replace(',"', ', "').replace('],[', "] [").replace('"', '')
+        mid = repr(output[:self.CHAR_LIMITS].replace(',"', ', "').replace('],[', "] [").replace('"', '')).replace('\\\\', '\\')
+        return eval(mid)
+        # return output[:self.CHAR_LIMITS].replace(',"', ', "').replace('],[', "] [").replace('"', '')
 
     def get_annotations_results(self, task):
         return self._pretty_results(task, 'annotations_results')
