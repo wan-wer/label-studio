@@ -218,7 +218,7 @@ def apply_filters(queryset, filters, project, request):
         return queryset
     for item in filters.items:
         value = getattr(item, 'value', None)
-        if value:
+        if type(value) == str:
             item.value = json.dumps(value).strip('"')
 
     # convert conjunction to orm statement
